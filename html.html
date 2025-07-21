@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Porównanie Obrazów</title>
+  <style>
+    .comparison-container {
+      position: relative;
+      width: 2560px; /* Rozdzielczość 2K */
+      height: 1440px;
+      background-image: url('0001.png');
+      background-size: 100% 100%;
+      margin: 0 auto; /* Wyśrodkowanie na stronie */
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background-image: url('0002.png');
+      background-size: 2560px 1440px;
+      background-position: 0 0;
+    }
+    .slider-line {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background-color: white;
+      pointer-events: none;
+    }
+    .slider {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+    }
+    .arrow-button {
+      position: absolute;
+      top: 50%;
+      font-size: 24px;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .arrow-button:hover {
+      background-color: #555;
+    }
+    .arrow-left {
+      left: 10px;
+      transform: translateY(-50%);
+    }
+    .arrow-right {
+      right: 10px;
+      transform: translateY(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="comparison-container">
+    <div class="overlay"></div>
+    <div class="slider-line"></div>
+    <input type="range" class="slider" min="0" max="100" value="50">
+    <button class="arrow-button arrow-left">←</button>
+    <button class="arrow-button arrow-right">→</button>
+  </div>
+  <script>
+    const slider = document.querySelector('.slider');
+    const overlay = document.querySelector('.overlay');
+    const sliderLine = document.querySelector('.slider-line');
+    const container = document.querySelector('.comparison-container');
+    const arrowLeft = document.querySelector('.arrow-left');
+    const arrowRight = document.querySelector('.arrow-right');
+
+    // Generowanie listy 250 par obrazów
+    const imagePairs = [];
+    for (let i = 1; i <= 9998; i += 2) {
+      const first = String(i).padStart(4, '0') + '.png';
+      const second = String(i + 1).padStart(4, '0') + '.png';
+      imagePairs.push([first, second]);
+    }
+    let currentPairIndex = 0;
+
+    // Funkcja aktualizująca obrazy
+    function updateImages() {
+      container.style.backgroundImage = `url('${imagePairs[currentPairIndex][0]}')`;
+      overlay.style.backgroundImage = `url('${imagePairs[currentPairIndex][1]}')`;
+    }
+
+    // Suwak do porównywania obrazów
+    slider.addEventListener('input', (e) => {
+      const value = e.target.value;
+      overlay.style.width = value + '%';
+      sliderLine.style.left = value + '%';
+    });
+
+    // Strzałka w prawo (następna para)
+    arrowRight.addEventListener('click', () => {
+      currentPairIndex = (currentPairIndex + 1) % imagePairs.length; // Przechodzenie do następnej pary
+      updateImages();
+    });
+
+    // Strzałka w lewo (poprzednia para)
+    arrowLeft.addEventListener('click', () => {
+      currentPairIndex = (currentPairIndex - 1 + imagePairs.length) % imagePairs.length; // Przechodzenie do poprzedniej pary
+      updateImages();
+    });
+
+    // Inicjalizacja pierwszych obrazów
+    updateImages();
+  </script>
+</body>
+</html>
